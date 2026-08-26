@@ -179,6 +179,10 @@ timer_interrupt (struct intr_frame *args UNUSED)
         if(t->wake_tick <= ticks){
           e = list_remove(e);
           thread_unblock(t);
+
+          if(thread_get_priority() < t->priority){
+            intr_yield_on_return();
+          }
         }
         else{
           e = list_next(e);
