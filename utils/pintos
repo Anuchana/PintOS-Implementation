@@ -565,13 +565,13 @@ sub run_bochs {
   open (BOCHSRC, ">", "bochsrc.txt") or die "bochsrc.txt: create: $!\n";
   print BOCHSRC <<EOF;
 romimage: file=\$BXSHARE/BIOS-bochs-latest
-vgaromimage: file=\$BXSHARE/VGABIOS-lgpl-latest
+vgaromimage: file=\$BXSHARE/VGABIOS-lgpl-latest.bin
 boot: disk
 cpu: ips=1000000
 megs: $mem
 log: bochsout.txt
 panic: action=fatal
-user_shortcut: keys=ctrlaltdel
+# user_shortcut: keys=ctrlaltdel
 EOF
   print BOCHSRC "gdbstub: enabled=1, port=$gdbport\n" if $debug eq 'gdb';
   print BOCHSRC "clock: sync=", $realtime ? 'realtime' : 'none',

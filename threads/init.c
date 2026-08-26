@@ -134,7 +134,48 @@ pintos_init (void)
     /* Run actions specified on kernel command line. */
     run_actions (argv);
   } else {
-    // TODO: no command line passed to kernel. Run interactively 
+    // TODO: no command line passed to kernel. Run interactively
+    char command[100];
+    int index = 0;
+    printf("PKUOS>");
+    while(true){
+      char c = input_getc();
+
+      if(c == '\r'){
+        command[index] = '\0';
+        if(strcmp(command,"whoami")==0){
+          printf("\n240268R\n");
+        }
+        else if(strcmp(command,"shutdown")==0){
+          printf("\nShutting down...\n");
+          shutdown();
+        }
+        else if(strcmp(command,"ram")==0){
+          printf("ram size is =%"PRIu32"\n",init_ram_pages*PGSIZE/1024);
+        }
+        else if(strcmp(command,"exit")==0){
+          break;
+        }
+        else if(strcmp(command,"time")==0){
+          printf("Time is: %lld\n",timer_ticks()/TIMER_FREQ);
+        }
+        else if(strcmp(command,"thread")==0){
+          struct thread *t = thread_current();
+          printf("Thread : %s\n",t->name);
+        }
+        else{
+          printf("\nInvalid Command\n");
+        }
+
+        index = 0;
+      }
+      else{
+        putchar(c);
+        printf("PKUOS>");
+        command[index] = c;
+        index++;
+      }
+    }
   }
 
   /* Finish up. */
