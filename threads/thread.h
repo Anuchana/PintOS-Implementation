@@ -24,6 +24,12 @@ typedef int tid_t;
 #define PRI_DEFAULT 31                  /* Default priority. */
 #define PRI_MAX 63                      /* Highest priority. */
 
+struct donation{
+  struct thread *donor;
+  struct list_elem elem;
+  struct lock *lock;
+  int priority;
+};
 /* A kernel thread or user process.
 
    Each thread structure is stored in its own 4 kB page.  The
@@ -92,8 +98,10 @@ extern struct list sleep_list;
     int64_t wake_tick;                  /*local variable to track wake time*/
     int priority;                       /* Priority. */
     struct list_elem allelem;           /* List element for all threads list. */
-
+    int base_priority;                  /* Base priority. */
     /* Shared between thread.c and synch.c. */
+    struct lock *waiting_lock;              /* Lock that the thread is waiting on (if any). */
+    struct list donations;                 /* List of threads that have donated priority to this thread. */
     struct list_elem elem;              /* List element. */
 
 #ifdef USERPROG
