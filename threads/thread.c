@@ -230,12 +230,7 @@ bool cmp_priority (const struct list_elem *a,const struct list_elem *b,void *aux
     struct thread *thread_a = list_entry(a,struct thread,elem);
     struct thread *thread_b = list_entry(b,struct thread,elem);
 
-    if(thread_a->priority > thread_b->priority){
-        return true;
-    }
-    else{
-        return false;
-    }
+    return thread_a->priority > thread_b->priority;
   }
 
 /* Transitions a blocked thread T to the ready-to-run state.
@@ -353,7 +348,19 @@ thread_foreach (thread_action_func *func, void *aux)
 void
 thread_set_priority (int new_priority) 
 {
-  thread_current ()->priority = new_priority;
+  thread_current ()->base_priority = new_priority;
+  if(list_empty(&thread_current()->donations)){
+    thread_current ()->priority = new_priority;
+  }
+  else{
+    struct donation *max_donation = list_entry(list_max(&thread_current()->donations,cmp_donation_priority,NULL),struct donation,elem);
+    if(thread_current()->priority < max_donation->priority){
+      thread_current ()->priority = max_donation->priority;
+    }
+    else{
+      thread_current ()->priority = new_priority;
+    }
+  }
   if(!list_empty(&ready_list)){
     struct thread *max_thread = list_entry(list_begin(&ready_list), struct thread, elem);
     if(new_priority < max_thread->priority){
