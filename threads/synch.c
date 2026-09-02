@@ -114,15 +114,19 @@ sema_up (struct semaphore *sema)
   ASSERT (sema != NULL);
  
   old_level = intr_disable ();
-  if (!list_empty (&sema->waiters)) 
-    {
-      struct thread *t = list_entry (list_pop_front (&sema->waiters), struct thread, elem);
-      thread_unblock (t);
-      if(thread_get_priority() <= t->priority){
-        should_yield = true;
-      }
-    }
   sema->value++;
+
+  if (!list_empty (&sema->waiters))
+  {
+      struct thread *t =
+          list_entry (list_pop_front (&sema->waiters),
+                      struct thread, elem);
+
+      thread_unblock (t);
+
+      if (thread_current ()->priority <= t->priority)
+          should_yield = true;
+  }
   intr_set_level (old_level);
   if(should_yield){
     thread_yield();
@@ -206,20 +210,33 @@ lock_acquire (struct lock *lock)
   ASSERT (!lock_held_by_current_thread (lock));
   struct thread *current_thread = thread_current();
   if(lock->holder != NULL){
-     current_thread->waiting_lock = lock;
-     if(current_thread->priority > lock->holder->priority){
-      lock->holder->priority = current_thread->priority;
-      struct donation *d = malloc(sizeof(struct donation));
-      d->donor = current_thread;
-      d->lock = lock;
-      d->priority = current_thread->priority;
-      list_push_back(&lock->holder->donations,&d->elem);
-    }
+    
+    struct thread *holder = lock->holder;
+    struct lock *donation_lock = lock;
+    while(holder != NULL ){
+      if(current_thread->priority > holder->priority){
+        holder->priority = current_thread->priority;
+        
+      }
 
+      struct donation *d = malloc(sizeof(struct donation));
+        d->donor = current_thread;
+        d->lock = donation_lock;
+        d->priority = current_thread->priority;
+        list_push_back(&holder->donations,&d->elem);
+
+      if(holder->waiting_lock == NULL){
+        break;
+      }
+      donation_lock = holder->waiting_lock;
+      holder = donation_lock->holder;
+
+    }
   }
+  current_thread->waiting_lock = lock;
   sema_down (&lock->semaphore);
   current_thread->waiting_lock = NULL;
-  lock->holder = thread_current ();
+  lock->holder = current_thread;
 }
 
 /* Tries to acquires LOCK and returns true if successful or false
