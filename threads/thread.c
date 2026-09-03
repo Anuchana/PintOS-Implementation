@@ -354,11 +354,11 @@ thread_set_priority (int new_priority)
   }
   else{
     struct donation *max_donation = list_entry(list_max(&thread_current()->donations,cmp_donation_priority,NULL),struct donation,elem);
-    if(thread_current()->priority < max_donation->priority){
+    if(thread_current()->base_priority < max_donation->priority){
       thread_current ()->priority = max_donation->priority;
     }
     else{
-      thread_current ()->priority = new_priority;
+      thread_current ()->priority = thread_current ()->base_priority;
     }
   }
   if(!list_empty(&ready_list)){
