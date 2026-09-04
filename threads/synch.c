@@ -263,7 +263,7 @@ bool cmp_donation_priority (const struct list_elem *a, const struct list_elem *b
   struct donation *donation_a = list_entry(a,struct donation,elem);
   struct donation *donation_b = list_entry(b,struct donation,elem);
 
-  return donation_a->priority > donation_b->priority;
+  return donation_a->priority < donation_b->priority;
 
 }
 
@@ -279,7 +279,9 @@ lock_release (struct lock *lock)
   ASSERT (lock_held_by_current_thread (lock));
   struct thread *current_thread = thread_current();
   struct list_elem *e;
+
   for(e = list_begin(&current_thread->donations); e != list_end(&current_thread->donations);){
+    
     struct list_elem *next = list_next(e);
     struct donation *d = list_entry(e,struct donation,elem);
     if(d->lock == lock){
