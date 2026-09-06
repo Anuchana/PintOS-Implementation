@@ -17,6 +17,7 @@ enum thread_status
 /* Thread identifier type.
    You can redefine this to whatever type you like. */
 typedef int tid_t;
+typedef int fixed_t;
 #define TID_ERROR ((tid_t) -1)          /* Error value for tid_t. */
 
 /* Thread priorities. */
@@ -96,7 +97,9 @@ extern struct list sleep_list;
     char name[16];                      /* Name (for debugging purposes). */
     uint8_t *stack;                     /* Saved stack pointer. */
     int64_t wake_tick;                  /*local variable to track wake time*/
-    int priority;                       /* Priority. */
+    int priority;     
+    int nice;
+    fixed_t recent_cpu;                 /* Recent CPU usage. */
     struct list_elem allelem;           /* List element for all threads list. */
     int base_priority;                  /* Base priority. */
     /* Shared between thread.c and synch.c. */
