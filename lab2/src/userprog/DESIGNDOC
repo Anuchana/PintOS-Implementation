@@ -1,0 +1,84 @@
++-----------------+
+|     CS 2043     |
+|    PROJECT 2    |
+| DESIGN DOCUMENT |
++-----------------+
+
+---- 240268R ----
+Jayarathne D.G.S.A
+...
+
+---- PRELIMINARIES ----
+
+...
+
+                         ARGUMENT PASSING
+                         =================
+
+---- DATA STRUCTURES ----
+
+...
+
+---- ALGORITHMS ----
+
+...
+
+---- SYNCHRONIZATION ----
+
+...
+
+---- RATIONALE ----
+
+...
+
+
+                         SYSTEM CALLS
+                         ============
+
+---- DATA STRUCTURES ----
+
+...
+
+---- ALGORITHMS ----
+
+...
+
+---- SYNCHRONIZATION ----
+
+...
+
+---- RATIONALE ----
+
+...
+
+
+                         USER MEMORY
+                         ===========
+
+---- DATA STRUCTURES ----
+
+...
+
+---- ALGORITHMS ----
+
+...
+
+---- SYNCHRONIZATION ----
+
+...
+
+---- RATIONALE ----
+
+...
+
+
+                         PROCESS MANAGEMENT
+                         ===================
+
+...
+
+
+                         FILE DESCRIPTORS
+                         =================
+
+...
